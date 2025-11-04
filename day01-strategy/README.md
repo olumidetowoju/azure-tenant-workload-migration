@@ -121,7 +121,7 @@ nano day01-strategy/README.md
 Task 2 – Login to Azure
 az login
 az account list -o table
-az account set --subscription "56d9a9d0-65a3-4aea-9957-ff103f641f9c"
+az account set --subscription
 
 Task 3 – Prepare Variable Files
 
