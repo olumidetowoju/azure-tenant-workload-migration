@@ -67,7 +67,7 @@ sequenceDiagram
 ---
 
 🧠 Prerequisites
-Azure Free Tier Subscription (ID: 56d9a9d0-65a3-4aea-9957-ff103f641f9c)
+Azure Free Tier Subscription
 
 Region: East US
 
@@ -112,44 +112,7 @@ Azure Resource Move limitations
 
 Azure Subscription and Tenant Overview
 
-🗂 Folder Tree Structure
-
-Below is the folder and file hierarchy you’ll create:
-
-azure-tenant-workload-migration/
-├── README.md
-├── diagrams/
-│   └── tenant-architecture-sequence.mmd
-├── docs/
-│   └── course-outline.md
-├── scripts/
-│   ├── bicep/
-│   │   └── base-environment.bicep
-│   ├── powershell/
-│   │   └── migrate-workload.ps1
-│   └── cli/
-│       └── create-tenants.sh
-├── day01-strategy/
-│   └── README.md
-├── day02-environment-prep/
-│   └── README.md
-├── day03-identity-networking/
-│   └── README.md
-├── day04-workload-inventory/
-│   └── README.md
-├── day05-migration-automation/
-│   └── README.md
-├── day06-data-apps-migration/
-│   └── README.md
-├── day07-validate-secure/
-│   └── README.md
-├── day08-go-live-cutover/
-│   └── README.md
-├── day09-cleanup-governance/
-│   └── README.md
-└── day10-review-next-steps/
-    └── README.md
-
+🗂 Folder Structure
 
 Each dayXX folder contains:
 
