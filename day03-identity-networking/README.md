@@ -59,18 +59,18 @@ Source Tenant – Fabrikam
 az ad sp create-for-rbac \
   --name fabrikam-workload-sp \
   --role contributor \
-  --scopes /subscriptions/56d9a9d0-65a3-4aea-9957-ff103f641f9c/resourceGroups/$RG_SOURCE \
+  --scopes /subscriptions/""/resourceGroups/$RG_SOURCE \
   --output json > fabrikam_sp.json
 
 Target Tenant – Contoso
 
 Switch context (simulated for lab):
 
-az account set --subscription "56d9a9d0-65a3-4aea-9957-ff103f641f9c"
+az account set --subscription ""
 az ad sp create-for-rbac \
   --name contoso-migration-sp \
   --role contributor \
-  --scopes /subscriptions/56d9a9d0-65a3-4aea-9957-ff103f641f9c/resourceGroups/$RG_TARGET \
+  --scopes /subscriptions/""/resourceGroups/$RG_TARGET \
   --output json > contoso_sp.json
 
 
@@ -92,7 +92,7 @@ az network vnet peering create \
   --name peering-src-to-tgt \
   --resource-group $RG_SOURCE \
   --vnet-name vnet-src-app \
-  --remote-vnet /subscriptions/56d9a9d0-65a3-4aea-9957-ff103f641f9c/resourceGroups/$RG_TARGET/providers/Microsoft.Network/virtualNetworks/vnet-tgt-app \
+  --remote-vnet /subscriptions/""/resourceGroups/$RG_TARGET/providers/Microsoft.Network/virtualNetworks/vnet-tgt-app \
   --allow-vnet-access
 
 Target → Source
@@ -100,7 +100,7 @@ az network vnet peering create \
   --name peering-tgt-to-src \
   --resource-group $RG_TARGET \
   --vnet-name vnet-tgt-app \
-  --remote-vnet /subscriptions/56d9a9d0-65a3-4aea-9957-ff103f641f9c/resourceGroups/$RG_SOURCE/providers/Microsoft.Network/virtualNetworks/vnet-src-app \
+  --remote-vnet /subscriptions/""/resourceGroups/$RG_SOURCE/providers/Microsoft.Network/virtualNetworks/vnet-src-app \
   --allow-vnet-access
 
 
