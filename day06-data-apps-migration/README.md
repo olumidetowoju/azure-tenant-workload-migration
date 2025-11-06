@@ -111,3 +111,108 @@ How would you validate that your App Service is connected to the correct SQL dat
 How does AzCopy authenticate between two different tenants?
 
 Next → Day 7 – Security & Data Protection
+
+## 🧩 Connectivity Verification (sqlcmd + Firewall Troubleshooting)
+
+Once your database import is complete, you should verify connectivity using the `sqlcmd` CLI tool or the Azure Portal Query Editor.
+
+### 🧰 Installing `sqlcmd` on Ubuntu / WSL2
+
+sudo apt update
+sudo apt install -y curl apt-transport-https gnupg
+
+# Add Microsoft package signing key and repo for Ubuntu 24.04
+curl -sSL https://packages.microsoft.com/keys/microsoft.asc | \
+    sudo gpg --dearmor -o /usr/share/keyrings/microsoft-prod.gpg
+
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft-prod.gpg] https://packages.microsoft.com/ubuntu/24.04/prod noble main" \
+  | sudo tee /etc/apt/sources.list.d/microsoft-prod.list
+
+sudo apt update
+sudo apt install -y mssql-tools18 unixodbc-dev
+echo 'export PATH="$PATH:/opt/mssql-tools18/bin"' >> ~/.bashrc
+source ~/.bashrc
+
+Verify installation:
+
+sqlcmd -?
+
+🧪 Test Database Connectivity
+Once installed, test your SQL Server connection:
+
+sqlcmd -S "$TGT_SQL_SERVER.database.windows.net" \
+       -d sqldb01 \
+       -U "sqladmin-learner" \
+       -P "$SQL_PASSWORD" \
+       -Q "SELECT DB_NAME(); SELECT TOP 5 name FROM sys.tables;"
+Expected output:
+
+DB_NAME
+-------
+sqldb01
+
+name
+-----
+<Table list or empty set>
+If you receive:
+
+pgsql
+Client with IP address 'x.x.x.x' is not allowed to access the server
+it means the firewall doesn’t yet allow your IP.
+
+🔒 Fixing Firewall Access
+Allow Azure Services
+
+az sql server firewall-rule create \
+  --resource-group "$RG_TARGET" \
+  --server "$TGT_SQL_SERVER" \
+  --name AllowAzureServices \
+  --start-ip-address 0.0.0.0 \
+  --end-ip-address 0.0.0.0
+Allow Your Public IP (for direct connections)
+
+MYIP=$(curl -s https://ifconfig.me)
+echo "Detected IP: $MYIP"
+
+az sql server firewall-rule create \
+  --resource-group "$RG_TARGET" \
+  --server "$TGT_SQL_SERVER" \
+  --name AllowMyIP \
+  --start-ip-address $MYIP \
+  --end-ip-address $MYIP
+
+Wait 2–5 minutes for propagation, then re-run the sqlcmd test.
+
+Cleanup (optional)
+After confirming access, remove your IP rule to re-harden security:
+
+az sql server firewall-rule delete \
+  --resource-group "$RG_TARGET" \
+  --server "$TGT_SQL_SERVER" \
+  --name AllowMyIP
+
+🧭 Alternate Verification Methods
+Azure Portal → Query Editor (Preview):
+
+Go to your SQL server in the portal.
+
+Open Query editor (preview).
+
+Sign in with SQL credentials (sqladmin-learner / your password).
+
+Run:
+
+SELECT DB_NAME();
+SELECT TOP 5 name FROM sys.tables;
+
+Azure Cloud Shell:
+Cloud Shell already includes sqlcmd, so you can run the same commands there without local setup.
+
+✅ Success Criteria
+sqlcmd connects successfully using your credentials.
+
+Database returns the name sqldb01.
+
+Optional: returns table names if your exported DB had any.
+
+Firewall rules are applied and verified.
