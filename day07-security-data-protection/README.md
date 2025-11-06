@@ -120,3 +120,64 @@ How does Private Link enhance Key Vault security?
 Which Azure CLI command grants a web app access to Key Vault secrets?
 
 Next → Day 8 – Monitoring & Compliance Policies
+
+## 🧩 RBAC vs Access Policy Troubleshooting Appendix
+
+If you encounter a **“Caller is not authorized to perform action on resource”** error when running:
+
+az keyvault secret set --vault-name kv-tgt-olumi --name SqlConnString --value "<value>"
+It means your Key Vault is using RBAC-based access control and your Azure CLI user does not yet have permission to perform the setSecret action.
+
+🧭 1. Identify Your Current User and Vault Access Model
+
+az account show -o table
+az ad signed-in-user show --query "{displayName:displayName,objectId:id}"
+az keyvault show -n kv-tgt-olumi --query "{name:name,enableRbacAuthorization:properties.enableRbacAuthorization}" -o jsonc
+If enableRbacAuthorization = true, the vault is RBAC-controlled.
+
+🧰 2. Fix Option A — Assign “Key Vault Administrator” Role (Recommended)
+Grant your signed-in user full permissions on the vault:
+
+MYID=$(az ad signed-in-user show --query id -o tsv)
+
+az role assignment create \
+  --assignee "$MYID" \
+  --role "Key Vault Administrator" \
+  --scope $(az keyvault show -n kv-tgt-olumi --query id -o tsv)
+⏱ Wait 2–5 minutes for propagation, then retry your secret creation:
+
+az keyvault secret set \
+  --vault-name kv-tgt-olumi \
+  --name "SqlConnString" \
+  --value "Server=tcp:$TGT_SQL_SERVER.database.windows.net,1433;Database=sqldb01;User ID=sqladmin-learner;Password=$SQL_PASSWORD;Encrypt=True;"
+
+🧰 3. Fix Option B — Switch to Legacy Access Policy Mode (Quick Workaround)
+If RBAC propagation is delayed or your environment doesn’t allow role assignment changes:
+
+az keyvault update -n kv-tgt-olumi --enable-rbac-authorization false
+
+MYID=$(az ad signed-in-user show --query id -o tsv)
+az keyvault set-policy \
+  -n kv-tgt-olumi \
+  --object-id "$MYID" \
+  --secret-permissions get list set delete
+Then retry the same az keyvault secret set command.
+
+🧾 4. Verify the Fix
+
+az keyvault secret list --vault-name kv-tgt-olumi -o table
+az keyvault secret show --vault-name kv-tgt-olumi --name SqlConnString -o jsonc
+If these commands return your secret successfully, the issue is resolved.
+
+🧱 5. Optional – Revert to RBAC Mode (After Testing)
+Once your tests are complete and access policies are no longer needed:
+
+az keyvault update -n kv-tgt-olumi --enable-rbac-authorization true
+
+🧠 Key Takeaways
+Mode	Control Model	Permissions Managed By	Best For
+RBAC (enableRbacAuthorization=true)	Azure Role-Based Access Control	Azure Roles (e.g., Key Vault Administrator)	Enterprise-scale governance
+Access Policy (false)	Legacy per-object permissioning	Access policies (per user/app)	Quick lab/test scenarios
+
+💡 Tip: For enterprise production, always prefer RBAC mode for Key Vault — it scales better and integrates cleanly with Managed Identities and CI/CD automation.
+
