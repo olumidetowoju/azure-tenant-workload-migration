@@ -26,6 +26,26 @@ Before you trust it:
 
 ---
 
+🧩 Sequence Diagram
+```mermaid
+sequenceDiagram
+    participant WebApp
+    participant ManagedIdentity
+    participant KeyVault
+    participant SQLDB
+    participant EncryptionKey
+
+    WebApp->>ManagedIdentity: Request token
+    ManagedIdentity->>KeyVault: Get SqlConnString secret
+    KeyVault-->>ManagedIdentity: Secret value (returned securely)
+    WebApp->>SQLDB: Connect using secret
+    SQLDB->>EncryptionKey: Use TDE key for at-rest encryption
+    EncryptionKey-->>SQLDB: Encryption OK
+    WebApp-->>User: Encrypted data served securely
+```
+
+---
+
 ## 🧪 Lab Steps
 
 ### 1️⃣ Connectivity Verification (sqlcmd + Firewall Troubleshooting)
