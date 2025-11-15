@@ -16,7 +16,7 @@ By the end of this lab, you will be able to:
 - Validate connections and permissions across tenants  
 
 ---
-⚙️ Section 1 – Database Migration (Azure SQL → Azure SQL)
+# ⚙️ Section 1 – Database Migration (Azure SQL → Azure SQL)
 
 We’ll use bacpac files and the az sql db commands
 
@@ -40,7 +40,8 @@ az sql db import \
   --storage-key "$TGT_STORAGE_KEY" \
   --storage-uri "https://$TGT_STORAGE_ACCOUNT.blob.core.windows.net/exports/sqldb01.bacpac"
 
-⚙️ Section 2 – Blob Storage Migration
+# ⚙️ Section 2 – Blob Storage Migration
+
 Use AzCopy for bulk data copy.
 
 # Install if not already
@@ -55,7 +56,8 @@ azcopy copy "https://$SRC_STORAGE_ACCOUNT.blob.core.windows.net/*?$SRC_SAS" \
             "https://$TGT_STORAGE_ACCOUNT.blob.core.windows.net/?$TGT_SAS" \
             --recursive
 
-⚙️ Section 3 – Web App Deployment and Configuration
+# ⚙️ Section 3 – Web App Deployment and Configuration
+
 We’ll deploy a lightweight App Service web app connected to the migrated SQL DB.
 
 az webapp up \
@@ -71,7 +73,7 @@ az webapp config connection-string set \
   --settings "DefaultConnection=Server=tcp:$TGT_SQL_SERVER.database.windows.net,1433;Initial Catalog=sqldb01;User ID=sqladmin-learner;Password=$SQL_PASSWORD;Encrypt=True;" \
   --connection-string-type SQLAzure
 
-🧩 Sequence Diagram
+# 🧩 Sequence Diagram
 ```mermaid
 sequenceDiagram
     participant SourceTenant as Source Tenant
@@ -90,18 +92,21 @@ sequenceDiagram
 
 ---
 
-✅ Checkpoint
+# ✅ Checkpoint
+
 Goal	Verification Command
 SQL Database imported	az sql db list -g "$RG_TARGET" -o table
 Blob data migrated	az storage blob list --account-name $TGT_STORAGE_ACCOUNT -o table
 App Service deployed	az webapp list -g "$RG_TARGET" -o table
 Web app connected	Test URL response → HTTP 200 OK
 
-🧠 Analogy
+# 🧠 Analogy
+
 Imagine you’ve just built a brand-new office in another city (Day 5).
 Day 6 is the moving day — shipping all files, desks, and computers (your data & apps) safely to the new site while keeping everything intact.
 
-📝 Assessment Checkpoint (Review Questions)
+# 📝 Assessment Checkpoint (Review Questions)
+
 What tool can migrate Blob Storage data across tenants?
 
 Why are .bacpac files preferred for Azure SQL cross-tenant migration?
@@ -137,7 +142,8 @@ Verify installation:
 
 sqlcmd -?
 
-🧪 Test Database Connectivity
+# 🧪 Test Database Connectivity
+
 Once installed, test your SQL Server connection:
 
 sqlcmd -S "$TGT_SQL_SERVER.database.windows.net" \
@@ -160,7 +166,8 @@ pgsql
 Client with IP address 'x.x.x.x' is not allowed to access the server
 it means the firewall doesn’t yet allow your IP.
 
-🔒 Fixing Firewall Access
+# 🔒 Fixing Firewall Access
+
 Allow Azure Services
 
 az sql server firewall-rule create \
@@ -191,7 +198,8 @@ az sql server firewall-rule delete \
   --server "$TGT_SQL_SERVER" \
   --name AllowMyIP
 
-🧭 Alternate Verification Methods
+# 🧭 Alternate Verification Methods
+
 Azure Portal → Query Editor (Preview):
 
 Go to your SQL server in the portal.
@@ -208,7 +216,8 @@ SELECT TOP 5 name FROM sys.tables;
 Azure Cloud Shell:
 Cloud Shell already includes sqlcmd, so you can run the same commands there without local setup.
 
-✅ Success Criteria
+# ✅ Success Criteria
+
 sqlcmd connects successfully using your credentials.
 
 Database returns the name sqldb01.
