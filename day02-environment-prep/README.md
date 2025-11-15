@@ -1,11 +1,11 @@
-🧱 Day 2 – Environment Prep
+# 🧱 Day 2 – Environment Prep
 
 Azure Tenant Workload Migration Mini-Camp
 
 “Before the migration begins, we must build the roads and connect the power.”
 Day 2 prepares the Source and Target tenants, subscriptions, and foundational network layout.
 
-🎯 Objectives
+# 🎯 Objectives
 
 By the end of this lab you will:
 
@@ -19,7 +19,8 @@ Establish tagging and governance baseline.
 
 Validate permissions for migration readiness.
 
-🧩 Concept Overview
+# 🧩 Concept Overview
+
 🌍 Why Environment Prep Matters
 
 In Azure, workloads exist inside a subscription, which itself belongs to a tenant (Microsoft Entra ID boundary).
@@ -31,7 +32,7 @@ Think of two separate cities (tenants).
 Each has its own electricity grid (identity provider), zoning laws (governance policies), and postal codes (resource naming).
 Before moving buildings (workloads), we must ensure the target city has roads and utilities ready.
 
-🧭 Lab Architecture Diagram
+# 🧭 Lab Architecture Diagram
 ```mermaid
 sequenceDiagram
     participant SourceTenant as Source Tenant (Fabrikam)
@@ -47,8 +48,9 @@ sequenceDiagram
 
 ---
 
-⚙️ Hands-On Lab Steps
-Step 1 – Login to Azure and Select Subscription
+# ⚙️ Hands-On Lab Steps
+
+## Step 1 – Login to Azure and Select Subscription
 az login
 az account list -o table
 az account set --subscription "56d9a9d0-65a3-4aea-9957-ff103f641f9c"
@@ -58,7 +60,7 @@ Confirm region:
 
 az account show --query "{Region:homeTenantId, Subscription: name}" -o table
 
-Step 2 – Create Source and Target Resource Groups
+## Step 2 – Create Source and Target Resource Groups
 source scripts/cli/vars.sh
 
 # Source Tenant – Fabrikam
@@ -78,7 +80,7 @@ Verify:
 
 az group list --query "[].{Name:name, Location:location}" -o table
 
-Step 3 – Deploy Initial Networking (Bicep)
+## Step 3 – Deploy Initial Networking (Bicep)
 Create a Bicep template at scripts/bicep/base-environment.bicep:
 
 param location string = 'eastus'
@@ -115,21 +117,21 @@ az deployment group create \
   --template-file scripts/bicep/base-environment.bicep \
   --parameters rgName=$RG_TARGET vnetName=vnet-tgt-app subnetName=snet-tgt-app
 
-Step 4 – Establish Cross-Tenant Connectivity (Simulated)
+## Step 4 – Establish Cross-Tenant Connectivity (Simulated)
 Since the free tier does not allow true cross-tenant peering, we simulate by creating local VNets and documenting peering for Day 3.
 
 Check VNets:
 
 az network vnet list -o table
 
-Step 5 – Tag and Document Governance Baseline
+## Step 5 – Tag and Document Governance Baseline
 az tag create --name "LabTags" \
   --tags Environment=Lab Owner=$OWNER Scenario=$SCENARIO
 
 az resource tag --tags Owner=$OWNER Scenario=$SCENARIO \
   --ids $(az group show -n $RG_SOURCE --query id -o tsv)
 
-🧠 Review Questions
+# 🧠 Review Questions
 
 What is the purpose of separate tenants in Azure?
 
@@ -141,14 +143,14 @@ Which command creates a resource group in Azure CLI?
 
 What region are we deploying to and why?
 
-🧼 Cleanup (Optional)
+# 🧼 Cleanup (Optional)
 
 To delete and save credits:
 
 az group delete --name $RG_SOURCE --yes --no-wait
 az group delete --name $RG_TARGET --yes --no-wait
 
-📅 Next Step
+# 📅 Next Step
 
 ➡ Proceed to Day 3 – Identity & Networking
 
