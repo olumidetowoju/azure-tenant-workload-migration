@@ -1,11 +1,11 @@
-⚙️ Day 5 – Migration Automation (Bicep + GitHub Actions)
+# ⚙️ Day 5 – Migration Automation (Bicep + GitHub Actions)
 
 Azure Tenant Workload Migration Mini-Camp
 
 “If you can script it, you can repeat it.”
 Today you’ll build modular Bicep, wire parameters, and set up GitHub Actions to deploy into the Target tenant.
 
-🎯 Objectives
+# 🎯 Objectives
 
 By the end of Day 5 you will:
 
@@ -17,7 +17,7 @@ Use GitHub Actions with an Azure Service Principal to deploy into $RG_TARGET.
 
 Dry-run and then deploy a minimal landing workload.
 
-🧩 Concept Overview
+# 🧩 Concept Overview
 
 Analogy:
 
@@ -26,7 +26,7 @@ You click them together (main.bicep), choose colors (parameters), and a robot (G
 
 We’ll focus on re-deploy (not cross-tenant “move”). Your Day 4 manifest guides what to build in the Target.
 
-🧠 Architecture Sequence
+# 🧠 Architecture Sequence
 ```mermaid
 sequenceDiagram
     participant Repo as GitHub Repo (IaC)
@@ -42,7 +42,7 @@ sequenceDiagram
 
 ---
 
-🔧 Hands-On Steps
+# 🔧 Hands-On Steps
 
 Prereqs: You’ve got $RG_TARGET and VNets from Day 2. SPs from Day 3.
 Ensure source scripts/cli/vars.sh is loaded in your shell.
@@ -299,7 +299,8 @@ az deployment group create \
 
 You can export SQL_PASSWORD and VM_PASSWORD in your shell, or pass inline like the what-if example.
 
-🤖 GitHub Actions CI/CD
+# 🤖 GitHub Actions CI/CD
+
 A) Prepare credentials (secure)
 
 Use the SP you created (Day 3) or create a new one with --sdk-auth JSON for Actions:
@@ -375,13 +376,14 @@ jobs:
 Set a repo-level environment variable RG_TARGET=rg-01-eus-tgt
 (Repo → Settings → Secrets and variables → Variables → RG_TARGET = your target RG)
 
-🧪 Validate
+# 🧪 Validate
+
 az resource list -g "$RG_TARGET" -o table
 az sql server list -g "$RG_TARGET" -o table
 az network vnet list -g "$RG_TARGET" -o table
 az vm list -g "$RG_TARGET" -d -o table
 
-🧩 Quiz – Checkpoint
+# 🧩 Quiz – Checkpoint
 
 Why do we split modules (network/storage/compute/sql) instead of a single file?
 
@@ -393,12 +395,13 @@ Which command previews changes without deploying?
 
 How would you map names from your migration-manifest.csv into Bicep parameters?
 
-🧼 Cleanup (Optional)
+# 🧼 Cleanup (Optional)
+
 az deployment group delete -g "$RG_TARGET" -n Day05Deploy
 # To fully remove resources, delete the RG (careful!):
 # az group delete -n "$RG_TARGET" --yes --no-wait
 
-✅ Checkpoint
+# ✅ Checkpoint
 
  VM deployed successfully
 
@@ -410,7 +413,7 @@ az deployment group delete -g "$RG_TARGET" -n Day05Deploy
 
  Outputs exported to /docs/
 
-📅 Next Step
+# 📅 Next Step
 
 ➡ Proceed to Day 6 – Data & Apps Migration
 
