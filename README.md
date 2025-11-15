@@ -66,7 +66,8 @@ sequenceDiagram
 
 ---
 
-🧠 Prerequisites
+## 🧠 Prerequisites
+
 Azure Free Tier Subscription
 
 Region: East US
@@ -105,14 +106,15 @@ You can also export all markdowns to PDF at the end using:
 
 pandoc -s -o azure-tenant-workload-migration.pdf README.md
 
-📚 References
+## 📚 References
+
 Microsoft Learn: Migrate cloud workloads across security tenants
 
 Azure Resource Move limitations
 
 Azure Subscription and Tenant Overview
 
-🗂 Folder Structure
+## 🗂 Folder Structure
 
 Each dayXX folder contains:
 
@@ -120,7 +122,8 @@ README.md: The textbook-style, step-by-step tutorial with diagrams, commands, ch
 
 Optional scripts: Each day may include scripts (CLI, PowerShell, or Bicep templates) tied to its lab.
 
-📅 Next Step
+## 📅 Next Step
+
 ➡ Proceed to Day 1 – Strategy & Planning
 Begin your journey toward mastering cross-tenant workload migration in Azure.
 
