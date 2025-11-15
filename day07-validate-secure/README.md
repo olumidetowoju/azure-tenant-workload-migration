@@ -26,7 +26,7 @@ Before you trust it:
 
 ---
 
-🧩 Sequence Diagram
+# 🧩 Sequence Diagram
 ```mermaid
 sequenceDiagram
     participant WebApp
@@ -77,7 +77,8 @@ az keyvault secret set \
   --value "Server=tcp:$TGT_SQL_SERVER.database.windows.net,1433;Database=sqldb01;User ID=sqladmin-learner;Password=$SQL_PASSWORD;Encrypt=True;"
 If you encounter a Forbidden (RBAC) error, use the appendix below.
 
-🔒 RBAC vs Access Policy Troubleshooting Appendix
+# 🔒 RBAC vs Access Policy Troubleshooting Appendix
+
 Identify your user and access mode
 
 az account show -o table
@@ -105,17 +106,20 @@ Verify Secret
 az keyvault secret list --vault-name kv-tgt-olumi -o table
 az keyvault secret show --vault-name kv-tgt-olumi --name SqlConnString -o jsonc
 
-🧩 Summary
+# 🧩 Summary
+
 Task	Verification Tool
 Firewall & Connectivity	sqlcmd, Portal Networking
 Key Vault Access	RBAC or Access Policy
 Secret Storage	az keyvault secret set / show
 Audit Log Review	Azure Monitor / Defender
 
-🧠 Checkpoint Quiz
+# 🧠 Checkpoint Quiz
+
 1️⃣ What CLI flag determines whether a Key Vault uses RBAC authorization?
 2️⃣ What command adds your IP address to SQL Server firewall rules?
 3️⃣ Why might the same password work in sqlcmd but not in the Portal?
 
-🧭 Next Step
+# 🧭 Next Step
+
 ➡ Day 8 – Monitoring & Compliance Policies
