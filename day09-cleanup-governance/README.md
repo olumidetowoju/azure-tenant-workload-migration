@@ -28,7 +28,8 @@ az consumption usage list \
   -o tsv > reports/cost-summary.csv
 This doesn’t create or delete resources — ✅ safe under Free Tier read-only mode.
 
-🧠 2. Governance Pillars Recap
+# 🧠 2. Governance Pillars Recap
+
 Pillar	Description	Example
 Tagging	Identify resource ownership and cost centers.	env=prod, owner=olumide
 Budgets	Alert when costs exceed thresholds.	Free-tier $200 cap
@@ -36,7 +37,7 @@ Policies	Enforce resource standards.	Restrict VM SKUs to low-cost tiers
 Monitoring	Visualize cost trends.	Azure Cost Management + Power BI
 Automation	Auto-shutdown dev/test resources.	Logic App or CLI automation
 
-📊 3. 
+# 📊 3. 
 ```mermaid
 sequenceDiagram
     autonumber
@@ -63,7 +64,8 @@ sequenceDiagram
 
 ---
 
-⚙️ 4. Script Example
+# ⚙️ 4. Script Example
+
 scripts/export-costs.sh
 
 #!/bin/bash
@@ -74,20 +76,23 @@ az consumption usage list \
   -o json > ../reports/cost-summary.json
 echo "✅ Cost summary exported safely."
 
-🧩 5. Assessment Checkpoint
+# 🧩 5. Assessment Checkpoint
+
 Q1. What’s the difference between cost visibility and cost control?
 Q2. Why are “tags” critical for chargeback accounting?
 Q3. How can Azure Policy prevent cost overruns?
 Q4. What steps would you automate in future tenant migrations?
 
-🪙 6. Instructor Notes
+# 🪙 6. Instructor Notes
+
 This module intentionally stays within free-tier operations.
 
 In a real tenant-to-tenant migration, these scripts feed into Azure Cost Management Exports or FinOps dashboards.
 
 Optional integration: push CSV into a GitHub Actions artifact for continuous reporting.
 
-🧾 7. Summary
+# 🧾 7. Summary
+
 Topic	Key Takeaway
 Governance	Prevents future overspend
 Read-only mode	Still allows safe reporting
