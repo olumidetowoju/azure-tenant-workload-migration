@@ -1,11 +1,11 @@
-📦 Day 4 – Workload Inventory
+# 📦 Day 4 – Workload Inventory
 
 Azure Tenant Workload Migration Mini-Camp
 
 “You can’t move what you haven’t counted.”
 Today you’ll discover, classify, and export definitions of your source workloads so we can redeploy them in the target tenant.
 
-🎯 Objectives
+# 🎯 Objectives
 
 By the end of this lab you will:
 
@@ -17,7 +17,7 @@ Export an ARM template for the RG and optionally decompile to Bicep.
 
 Identify can-move vs re-deploy items for cross-tenant migration.
 
-🧩 Concept Overview
+# 🧩 Concept Overview
 
 Analogy:
 
@@ -28,7 +28,7 @@ The manifest is your master checklist for moving day.
 
 Some resource types can’t be directly moved across tenants (identity-bound services, certain managed resources). We’ll bias for re-deploy using exported templates + parameters.
 
-🧠 Architecture Sequence
+# 🧠 Architecture Sequence
 ```mermaid
 sequenceDiagram
     participant SourceRG as Source RG (Fabrikam)
@@ -44,7 +44,7 @@ sequenceDiagram
 
 ---
 
-⚙️ Hands-On Lab Steps
+# ⚙️ Hands-On Lab Steps
 
 Pre-req: You completed Day 2 and Day 3; you have scripts/cli/vars.sh loaded.
 
@@ -182,7 +182,7 @@ Run:
 
 pwsh -f scripts/powershell/inventory.ps1
 
-🧠 Classify: Re-deploy vs Special Handling
+# 🧠 Classify: Re-deploy vs Special Handling
 
 Create a helper note (optional):
 
@@ -197,7 +197,7 @@ Special: Managed identities, some PaaS with tenant-locked identities, role assig
 
 You’ll use this classification to fill the migration-manifest.csv.
 
-✅ Deliverables
+# ✅ Deliverables
 
 docs/source-inventory.json + docs/source-inventory.csv (or -ps.csv).
 
@@ -207,7 +207,7 @@ Optional: docs/source-rg-template.json and docs/source-rg-template.bicep.
 
 Optional: docs/move-vs-redeploy.md notes.
 
-🧩 Quiz – Checkpoint
+# 🧩 Quiz – Checkpoint
 
 Why is a migration manifest essential in cross-tenant moves?
 
@@ -219,14 +219,14 @@ Where do you record the new names of resources that must be globally unique (e.g
 
 Which command produced the machine-readable list of all resources in the RG?
 
-🧼 Cleanup (Optional)
+# 🧼 Cleanup (Optional)
 
 No resources created today, so no teardown. If you made test RGs, you can remove them with:
 
 # Example (be careful!)
 # az group delete --name $RG_SOURCE --yes --no-wait
 
-📅 Next Step
+# 📅 Next Step
 
 ➡ Proceed to Day 5 – Migration Automation
 
