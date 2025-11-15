@@ -1,11 +1,11 @@
-🧭 Day 1 – Strategy & Planning
+# 🧭 Day 1 – Strategy & Planning
 
 Azure Tenant Workload Migration Mini-Camp
 
 “Before we move the cloud workloads, we move the vision.”
 This first day lays the blueprint — why, what, and how to migrate workloads across security tenants.
 
-🎯 Objectives
+# 🎯 Objectives
 
 By the end of Day 1 you will:
 
@@ -19,7 +19,8 @@ Plan a high-level migration strategy and architecture.
 
 Prepare for environment setup (Day 2).
 
-🧩 Concept Overview
+# 🧩 Concept Overview
+
 🌐 What Is a Tenant Migration?
 
 An Azure tenant represents a dedicated, secure boundary under Microsoft Entra ID.
@@ -38,7 +39,7 @@ Each has its own security, badges, and networks.
 Migrating workloads is like moving an entire department from one building to another —
 you must re-issue access badges (identities), move the servers (resources), and re-connect the power (network).
 
-🧱 Lab Architecture Diagram
+# 🧱 Lab Architecture Diagram
 ```mermaid
 sequenceDiagram
     participant SourceTenant as Fabrikam (Source Tenant)
@@ -54,7 +55,7 @@ sequenceDiagram
 
 ---
 
-⚙️ Identity Model & Scenario
+# ⚙️ Identity Model & Scenario
 
 We’ll simulate an acquisition scenario:
 
@@ -70,8 +71,9 @@ Workloads are deployed anew in the target environment.
 
 Source tenant remains read-only during cut-over validation.
 
-🧠 Strategy Planning Steps
-Step 1 – Define Business Objectives
+# 🧠 Strategy Planning Steps
+
+## Step 1 – Define Business Objectives
 
 Clarify why the migration is happening:
 
@@ -81,7 +83,7 @@ Divestiture: split and re-host.
 
 Compliance: meet data-sovereignty or security requirements.
 
-Step 2 – Assess Current State (Source Tenant)
+## Step 2 – Assess Current State (Source Tenant)
 
 Document the current resources:
 
@@ -97,7 +99,7 @@ az login
 az account show
 az resource list --output table
 
-Step 3 – Design Target State (Target Tenant)
+## Step 3 – Design Target State (Target Tenant)
 
 Decide how resources will map to the target:
 
@@ -107,23 +109,24 @@ Use resource tags like Owner=olumidetowoju, Lab=Day01, Scenario=Acquisition.
 
 Use East US region for cost control.
 
-Step 4 – Choose Migration Approach
+## Step 4 – Choose Migration Approach
 Approach	Description	Toolset
 Re-Deploy (Recommended)	Export templates from source and deploy to target	ARM/Bicep, CLI, PowerShell
 Move (Resource Move)	Use Azure Resource Move feature (but limited cross-tenant)	Portal, CLI
 Hybrid Approach	Re-deploy core services, re-connect data	Mixed methods
 
-🧰 Hands-On Lab Tasks
-Task 1 – Create Initial Directories
+# 🧰 Hands-On Lab Tasks
+
+## Task 1 – Create Initial Directories
 mkdir -p day01-strategy
 nano day01-strategy/README.md
 
-Task 2 – Login to Azure
+## Task 2 – Login to Azure
 az login
 az account list -o table
 az account set --subscription
 
-Task 3 – Prepare Variable Files
+## Task 3 – Prepare Variable Files
 
 Create a Bash variables file for future days:
 
@@ -140,7 +143,7 @@ Save and load:
 
 source scripts/cli/vars.sh
 
-🧭 Deliverables
+# 🧭 Deliverables
 
 Defined migration strategy document (in docs/).
 
@@ -150,7 +153,7 @@ Confirmed subscription and region.
 
 Drafted architecture diagram.
 
-🧩 Quiz – Checkpoint
+# 🧩 Quiz – Checkpoint
 
 What is the difference between “tenant” and “subscription”?
 
@@ -162,13 +165,13 @@ What are two benefits of tagging resources with metadata?
 
 What Azure region are we using and why?
 
-🧼 Cleanup Tasks
+# 🧼 Cleanup Tasks
 az logout
 
 
 (We don’t create resources yet on Day 1, so no teardown needed.)
 
-📅 Next Step
+# 📅 Next Step
 
 ➡ Proceed to Day 2 – Environment Prep
 
