@@ -48,28 +48,31 @@ sequenceDiagram
 
 Pre-req: You completed Day 2 and Day 3; you have scripts/cli/vars.sh loaded.
 
-1) Load variables and confirm scope
+**1) Load variables and confirm scope**
+
 source scripts/cli/vars.sh
 
 echo "RG_SOURCE=$RG_SOURCE"
 echo "RG_TARGET=$RG_TARGET"
 echo "LOCATION=$LOCATION"
 
-2) Quick inventory (tables)
-# All resources in the source RG
+**2) Quick inventory (tables)**
+
+All resources in the source RG
 az resource list -g "$RG_SOURCE" -o table
 
-# Common workloads (run any/all that apply)
+Common workloads (run any/all that apply)
 az vm list -g "$RG_SOURCE" -d -o table
 az network vnet list -g "$RG_SOURCE" -o table
 az storage account list -g "$RG_SOURCE" -o table
 az sql server list -g "$RG_SOURCE" -o table
 az keyvault list -g "$RG_SOURCE" -o table
 
-3) Save machine-readable inventory (JSON)
+**3) Save machine-readable inventory (JSON)**
+
 az resource list -g "$RG_SOURCE" -o json > docs/source-inventory.json
 
-4) Create a Migration Manifest (CSV)
+**4) Create a Migration Manifest (CSV)**
 
 Create the CSV:
 
@@ -88,11 +91,11 @@ sourceResourceId,resourceType,sourceName,targetName,notes,migrationStrategy,tags
 
 You’ll update this file as your discovery grows. It becomes the source of truth for Day 5–8.
 
-5) Optional: Export ARM template of the RG
+**5) Optional: Export ARM template of the RG**
 
 Azure’s export is convenient but not guaranteed to cover everything; treat it as a scaffold.
 
-# Export a template of the entire RG
+Export a template of the entire RG
 az group export --name "$RG_SOURCE" --resource-ids $(az resource list -g "$RG_SOURCE" --query "[].id" -o tsv) > docs/source-rg-template.json
 
 
@@ -108,21 +111,21 @@ Create the folder beforehand if using per-resource export:
 
 mkdir -p docs/exported
 
-6) Optional: Decompile ARM → Bicep
+**6) Optional: Decompile ARM → Bicep**
 
 If you exported docs/source-rg-template.json, you can attempt a decompile:
 
-# Requires Bicep CLI installed (az bicep version)
+Requires Bicep CLI installed (az bicep version)
 az bicep version
 
-# Decompile
+Decompile
 az bicep decompile --file docs/source-rg-template.json
-# This produces docs/source-rg-template.bicep (you can refactor into clean modules for Day 5)
+This produces docs/source-rg-template.bicep (you can refactor into clean modules for Day 5)
 
 
 Decompilation isn’t perfect; we’ll refactor into neat modules in Day 5 – Migration Automation.
 
-7) Generate a human-friendly Inventory Report
+**7) Generate a human-friendly Inventory Report**
 
 Create a simple CLI script (bash) to dump a CSV view from your RG:
 
@@ -149,9 +152,9 @@ scripts/cli/inventory.sh > docs/source-inventory.csv
 
 (If you don’t have jq, install it, or change the script to -o tsv and massage with awk.)
 
-8) (Optional) PowerShell inventory
-nano scripts/powershell/inventory.ps1
+**8) (Optional) PowerShell inventory**
 
+nano scripts/powershell/inventory.ps1
 
 Paste:
 
