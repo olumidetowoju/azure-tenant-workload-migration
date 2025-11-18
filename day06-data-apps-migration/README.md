@@ -16,11 +16,12 @@ By the end of this lab, you will be able to:
 - Validate connections and permissions across tenants  
 
 ---
-# ⚙️ Section 1 – Database Migration (Azure SQL → Azure SQL)
+## ⚙️ Section 1 – Database Migration (Azure SQL → Azure SQL)
 
 We’ll use bacpac files and the az sql db commands
 
-# Export database from source tenant
+**Export database from source tenant**
+
 az sql db export \
   --admin-user "sqladmin-learner" \
   --admin-password "$SQL_PASSWORD" \
@@ -30,7 +31,8 @@ az sql db export \
   --storage-key "$SRC_STORAGE_KEY" \
   --storage-uri "https://$SRC_STORAGE_ACCOUNT.blob.core.windows.net/exports/sqldb01.bacpac"
 
-# Import database into target tenant
+**Import database into target tenant**
+
 az sql db import \
   --admin-user "sqladmin-learner" \
   --admin-password "$SQL_PASSWORD" \
@@ -40,23 +42,26 @@ az sql db import \
   --storage-key "$TGT_STORAGE_KEY" \
   --storage-uri "https://$TGT_STORAGE_ACCOUNT.blob.core.windows.net/exports/sqldb01.bacpac"
 
-# ⚙️ Section 2 – Blob Storage Migration
+## ⚙️ Section 2 – Blob Storage Migration
 
 Use AzCopy for bulk data copy.
 
-# Install if not already
+**Install if not already**
+
 sudo apt install -y azcopy
 
-# Login to each tenant interactively
+**Login to each tenant interactively**
+
 azcopy login --tenant-id $SRC_TENANT_ID
 azcopy login --tenant-id $TGT_TENANT_ID
 
-# Copy all containers from source to target
+**Copy all containers from source to target**
+
 azcopy copy "https://$SRC_STORAGE_ACCOUNT.blob.core.windows.net/*?$SRC_SAS" \
             "https://$TGT_STORAGE_ACCOUNT.blob.core.windows.net/?$TGT_SAS" \
             --recursive
 
-# ⚙️ Section 3 – Web App Deployment and Configuration
+## ⚙️ Section 3 – Web App Deployment and Configuration
 
 We’ll deploy a lightweight App Service web app connected to the migrated SQL DB.
 
@@ -66,14 +71,15 @@ az webapp up \
   --runtime "DOTNET:8" \
   --location "$LOCATION"
 
-# Configure connection string
+**Configure connection string**
+
 az webapp config connection-string set \
   --name "$WEBAPP_NAME" \
   --resource-group "$RG_TARGET" \
   --settings "DefaultConnection=Server=tcp:$TGT_SQL_SERVER.database.windows.net,1433;Initial Catalog=sqldb01;User ID=sqladmin-learner;Password=$SQL_PASSWORD;Encrypt=True;" \
   --connection-string-type SQLAzure
 
-# 🧩 Sequence Diagram
+## 🧩 Sequence Diagram
 ```mermaid
 sequenceDiagram
     participant SourceTenant as Source Tenant
@@ -92,7 +98,7 @@ sequenceDiagram
 
 ---
 
-# ✅ Checkpoint
+## ✅ Checkpoint
 
 Goal	Verification Command
 SQL Database imported	az sql db list -g "$RG_TARGET" -o table
@@ -100,12 +106,12 @@ Blob data migrated	az storage blob list --account-name $TGT_STORAGE_ACCOUNT -o t
 App Service deployed	az webapp list -g "$RG_TARGET" -o table
 Web app connected	Test URL response → HTTP 200 OK
 
-# 🧠 Analogy
+## 🧠 Analogy
 
 Imagine you’ve just built a brand-new office in another city (Day 5).
 Day 6 is the moving day — shipping all files, desks, and computers (your data & apps) safely to the new site while keeping everything intact.
 
-# 📝 Assessment Checkpoint (Review Questions)
+## 📝 Assessment Checkpoint (Review Questions)
 
 What tool can migrate Blob Storage data across tenants?
 
@@ -126,7 +132,7 @@ Once your database import is complete, you should verify connectivity using the 
 sudo apt update
 sudo apt install -y curl apt-transport-https gnupg
 
-# Add Microsoft package signing key and repo for Ubuntu 24.04
+## Add Microsoft package signing key and repo for Ubuntu 24.04
 curl -sSL https://packages.microsoft.com/keys/microsoft.asc | \
     sudo gpg --dearmor -o /usr/share/keyrings/microsoft-prod.gpg
 
@@ -142,7 +148,7 @@ Verify installation:
 
 sqlcmd -?
 
-# 🧪 Test Database Connectivity
+## 🧪 Test Database Connectivity
 
 Once installed, test your SQL Server connection:
 
@@ -166,7 +172,7 @@ pgsql
 Client with IP address 'x.x.x.x' is not allowed to access the server
 it means the firewall doesn’t yet allow your IP.
 
-# 🔒 Fixing Firewall Access
+## 🔒 Fixing Firewall Access
 
 Allow Azure Services
 
@@ -198,7 +204,7 @@ az sql server firewall-rule delete \
   --server "$TGT_SQL_SERVER" \
   --name AllowMyIP
 
-# 🧭 Alternate Verification Methods
+## 🧭 Alternate Verification Methods
 
 Azure Portal → Query Editor (Preview):
 
@@ -216,7 +222,7 @@ SELECT TOP 5 name FROM sys.tables;
 Azure Cloud Shell:
 Cloud Shell already includes sqlcmd, so you can run the same commands there without local setup.
 
-# ✅ Success Criteria
+## ✅ Success Criteria
 
 sqlcmd connects successfully using your credentials.
 
