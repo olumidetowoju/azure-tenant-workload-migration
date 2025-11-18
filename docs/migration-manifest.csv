@@ -1,1 +1,7 @@
 sourceResourceId,resourceType,sourceName,targetName,notes,migrationStrategy,tags
+/subscriptions/56d9a9d0-65a3-4aea-9957-ff103f641f9c/resourceGroups/rg-01-eus-src/providers/Microsoft.Network/virtualNetworks/vnet-src-app,Microsoft.Network/virtualNetworks,vnet-src-app,vnet-tgt-app,"10.0.0.0/16 -> 10.1.0.0/16",Re-deploy,"Owner=olumidetowoju;Scenario=acquisition"
+/subscriptions/56d9a9d0-65a3-4aea-9957-ff103f641f9c/resourceGroups/rg-01-eus-src/providers/Microsoft.Network/virtualNetworks/vnet-src-app/subnets/snet-src-app,Microsoft.Network/virtualNetworks/subnets,snet-src-app,snet-tgt-app,"10.0.1.0/24 -> 10.1.1.0/24",Re-deploy,"Lab=day04"
+/subscriptions/56d9a9d0-65a3-4aea-9957-ff103f641f9c/resourceGroups/rg-01-eus-src/providers/Microsoft.Compute/virtualMachines/vm-app-01,Microsoft.Compute/virtualMachines,vm-app-01,vm-app-01,"B1s, Gen2",Re-deploy,"CostTier=free"
+/subscriptions/56d9a9d0-65a3-4aea-9957-ff103f641f9c/resourceGroups/rg-01-eus-src/providers/Microsoft.Storage/storageAccounts/st01app,Microsoft.Storage/storageAccounts,st01app,st01apptgt,"name must be globally unique",Re-deploy,"DataClass=app"
+/subscriptions/56d9a9d0-65a3-4aea-9957-ff103f641f9c/resourceGroups/rg-01-eus-src/providers/Microsoft.Sql/servers/sqlsrc01,Microsoft.Sql/servers,sqlsrc01,sqltgt01,"Basic tier if free/low cost",Re-deploy,"Backup=on"
+sourceResourceId,resourceType,sourceName,targetName,notes,migrationStrategy,tags

@@ -1,0 +1,20 @@
+[
+  {
+    "changedTime": "2025-11-05T04:19:39.852745+00:00",
+    "createdTime": "2025-11-05T04:19:37.312173+00:00",
+    "extendedLocation": null,
+    "id": "/subscriptions/56d9a9d0-65a3-4aea-9957-ff103f641f9c/resourceGroups/rg-01-eus-src/providers/Microsoft.Network/virtualNetworks/vnet-src-app",
+    "identity": null,
+    "kind": null,
+    "location": "eastus",
+    "managedBy": null,
+    "name": "vnet-src-app",
+    "plan": null,
+    "properties": null,
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-01-eus-src",
+    "sku": null,
+    "tags": null,
+    "type": "Microsoft.Network/virtualNetworks"
+  }
+]

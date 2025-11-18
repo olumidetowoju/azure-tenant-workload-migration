@@ -1,0 +1,19 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location":      { "value": "eastus2" },
+    "sqlLocation":   { "value": "eastus2" },
+
+    "vnetAddress":   { "value": "10.2.0.0/16" },
+    "subnetAddress": { "value": "10.2.1.0/24" },
+    "vnetName":      { "value": "vnet-tgt-app-eus2" },
+    "subnetName":    { "value": "snet-tgt-app-eus2" },
+
+    "storageName":   { "value": "st01apptgteus2" },
+    "sqlServerName": { "value": "sqltgt01-eus2-olumi" },
+
+    "vmName":        { "value": "vm-app-01" },
+    "vmSize":        { "value": "Standard_D2s_v3" }
+  }
+}
