@@ -47,7 +47,7 @@ sequenceDiagram
 Prereqs: You’ve got $RG_TARGET and VNets from Day 2. SPs from Day 3.
 Ensure source scripts/cli/vars.sh is loaded in your shell.
 
-1) Create Bicep modules
+**1) Create Bicep modules**
 
 Create the modules directory and files:
 
@@ -188,7 +188,8 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
 
 output vmId string = vm.id
 
-2) Compose main.bicep
+**2) Compose main.bicep**
+
 nano scripts/bicep/main.bicep
 
 param location string = 'eastus'
@@ -256,7 +257,8 @@ module vm './modules/vm.bicep' = {
   }
 }
 
-3) Add parameters file (don’t store secrets in Git)
+**3) Add parameters file (don’t store secrets in Git)**
+
 nano params/dev.eastus.json
 
 {
@@ -277,10 +279,12 @@ nano params/dev.eastus.json
 
 Secrets (sqlAdminPassword, vmAdminPassword) will be supplied at deploy time (CLI or GitHub Actions secrets), not committed.
 
-4) Local dry-run (Preview)
+**4) Local dry-run (Preview)**
+
 source scripts/cli/vars.sh
 
-# What-if (preview)
+What-if (preview)
+
 az deployment group what-if \
   --resource-group "$RG_TARGET" \
   --template-file scripts/bicep/main.bicep \
@@ -288,7 +292,8 @@ az deployment group what-if \
   --parameters sqlAdminPassword="$(read -p 'SQL Admin Password: ' -s p; echo $p)" \
                vmAdminPassword="$(read -p 'VM Admin Password: ' -s p; echo $p)"
 
-5) Local deploy
+**5) Local deploy**
+
 az deployment group create \
   --name Day05Deploy \
   --resource-group "$RG_TARGET" \
@@ -398,8 +403,8 @@ How would you map names from your migration-manifest.csv into Bicep parameters?
 # 🧼 Cleanup (Optional)
 
 az deployment group delete -g "$RG_TARGET" -n Day05Deploy
-# To fully remove resources, delete the RG (careful!):
-# az group delete -n "$RG_TARGET" --yes --no-wait
+To fully remove resources, delete the RG (careful!):
+az group delete -n "$RG_TARGET" --yes --no-wait
 
 # ✅ Checkpoint
 
