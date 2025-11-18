@@ -24,18 +24,18 @@
 
 ## 🔐 Read-only validations (safe in Disabled state)
 
-# Subscription state snapshot
+## Subscription state snapshot
 az account show --query "{name:name,id:id,state:state}" -o table
 
-# Resource groups & resources snapshot (read-only)
+## Resource groups & resources snapshot (read-only)
 az group list -o table
 az resource list --query "[].{Name:name,Type:type,RG:resourceGroup}" -o table
 
-# Cost history (read-only)
+## Cost history (read-only)
 az consumption usage list --start-date "$(date -I -d '30 days ago')" --end-date "$(date -I)" -o table
 Save any outputs into docs/final/ as evidence.
 
-# 🧩 Sequence Diagram — Day 10 Closeout
+## 🧩 Sequence Diagram — Day 10 Closeout
 ```mermaid
 sequenceDiagram
     autonumber
@@ -58,11 +58,11 @@ sequenceDiagram
 
 ---
 
-# 📦 Archiving steps
+## 📦 Archiving steps
 
 mkdir -p docs/final
 
-# Save point-in-time evidence (read-only)
+## Save point-in-time evidence (read-only)
 az account show -o json > docs/final/subscription.json
 az group list -o json > docs/final/resource-groups.json
 az resource list -o json > docs/final/resources.json
@@ -75,14 +75,14 @@ Add a short manifest:
 
 cat > docs/final/README.md <<'EOF'
 
-# Final Evidence Bundle
+## Final Evidence Bundle
 - `subscription.json`: subscription state snapshot
 - `resource-groups.json`, `resources.json`: inventories at closure
 - `cost-last-30d.json`: historical usage (read-only export)
 - Links: Day 7 (Security), Day 8 (Monitoring notes), Day 9 (Cost)
 EOF
 
-# ✅ Decommissioning Checklist (for real cutovers later)
+## ✅ Decommissioning Checklist (for real cutovers later)
 
 Communication: stakeholder sign-off; freeze window agreed.
 
@@ -104,7 +104,7 @@ Docs: update runbook, lessons learned, and PR to main.
 
 For this free-tier edition, we stop at documentation; your subscription is already Disabled/ReadOnly.
 
-# 🧠 Lessons Learned (template)
+## 🧠 Lessons Learned (template)
 
 Constraints hit: VM SKU unavailability (East US), SQL server region restrictions, RBAC vs Access Policy for Key Vault, subscription read-only flips.
 
@@ -114,14 +114,14 @@ Changes for production: Private Link for SQL/Key Vault, CMK for TDE with HSM, CI
 
 Add your notes here ➜ docs/final/lessons-learned.md.
 
-# 🏷️ Certificate of Completion (optional)
+## 🏷️ Certificate of Completion (optional)
 
 Azure Tenant Workload Migration – Blockbuster Mini-Camp
 Participant: Olumide (olumidetowoju)
 Completed: Day 1–10 (Free-Tier Edition, Documentation Closeout)
 Repository: github.com/olumidetowoju/azure-tenant-workload-migration
 
-# 🔗 Navigation
+## 🔗 Navigation
 
 ← Day 9 – Cleanup & Cost Governance
 
