@@ -15,20 +15,22 @@
 ## 🧩 1. Exporting Cost Data (Read-Only Safe)
 Even though your subscription is disabled, you can still pull **historical usage data**.
 
-# Export cost and usage for the last 30 days
+**Export cost and usage for the last 30 days**
+
 az consumption usage list \
   --start-date 2025-10-01 \
   --end-date 2025-11-01 \
   -o table
 
-# Save to CSV for offline analysis
+**Save to CSV for offline analysis**
+
 az consumption usage list \
   --start-date 2025-10-01 \
   --end-date 2025-11-01 \
   -o tsv > reports/cost-summary.csv
 This doesn’t create or delete resources — ✅ safe under Free Tier read-only mode.
 
-# 🧠 2. Governance Pillars Recap
+## 🧠 2. Governance Pillars Recap
 
 Pillar	Description	Example
 Tagging	Identify resource ownership and cost centers.	env=prod, owner=olumide
@@ -37,7 +39,7 @@ Policies	Enforce resource standards.	Restrict VM SKUs to low-cost tiers
 Monitoring	Visualize cost trends.	Azure Cost Management + Power BI
 Automation	Auto-shutdown dev/test resources.	Logic App or CLI automation
 
-# 📊 3. 
+## 📊 3. 
 ```mermaid
 sequenceDiagram
     autonumber
@@ -64,26 +66,28 @@ sequenceDiagram
 
 ---
 
-# ⚙️ 4. Script Example
+## ⚙️ 4. Script Example
 
 scripts/export-costs.sh
 
 #!/bin/bash
-# Export cost usage without modifying resources
+
+**Export cost usage without modifying resources**
+
 az consumption usage list \
   --start-date "$(date -I -d '30 days ago')" \
   --end-date "$(date -I)" \
   -o json > ../reports/cost-summary.json
 echo "✅ Cost summary exported safely."
 
-# 🧩 5. Assessment Checkpoint
+## 🧩 5. Assessment Checkpoint
 
 Q1. What’s the difference between cost visibility and cost control?
 Q2. Why are “tags” critical for chargeback accounting?
 Q3. How can Azure Policy prevent cost overruns?
 Q4. What steps would you automate in future tenant migrations?
 
-# 🪙 6. Instructor Notes
+## 🪙 6. Instructor Notes
 
 This module intentionally stays within free-tier operations.
 
@@ -91,7 +95,7 @@ In a real tenant-to-tenant migration, these scripts feed into Azure Cost Managem
 
 Optional integration: push CSV into a GitHub Actions artifact for continuous reporting.
 
-# 🧾 7. Summary
+## 🧾 7. Summary
 
 Topic	Key Takeaway
 Governance	Prevents future overspend
