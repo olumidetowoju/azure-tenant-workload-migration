@@ -24,23 +24,28 @@ Use Defender for Cloud Free (recommendations only)
 
 Use Log Analytics sparingly (VM Insights can incur cost; enable for 1 small VM)
 
-⚙️ Section 1 — Create/Connect a Log Analytics Workspace
+## ⚙️ Section 1 — Create/Connect a Log Analytics Workspace
 
-# Prereqs (from repo vars)
+**Prereqs (from repo vars)**
+
 source scripts/cli/vars.sh
 
-# 1) Create LAW
+**1) Create LAW**
+
 export LAW_NAME="law-migrate-eus2"
 az monitor log-analytics workspace create \
   -g "$RG_TARGET" \
   -n "$LAW_NAME" \
   -l "$LOCATION"
 
-# 2) Link the VM to LAW via Data Collection Rule (DCR)
-# (uses the 'vm-app-01' we built on Day 5 — adjust if needed)
+**2) Link the VM to LAW via Data Collection Rule (DCR)**
+
+**(uses the 'vm-app-01' we built on Day 5 — adjust if needed)**
+
 export VM_NAME="${VM_NAME:-vm-app-01}"
 
-# Create a default DCR to collect performance + syslogs
+**Create a default DCR to collect performance + syslogs**
+
 export DCR_NAME="dcr-vmperf-syslog"
 az monitor data-collection rule create \
   -g "$RG_TARGET" \
@@ -48,7 +53,7 @@ az monitor data-collection rule create \
   --location "$LOCATION" \
   --data-flows file://"scripts/json/dcr-vm-perf-syslog.json" 2>/dev/null || true
 
-# If you don't have the JSON file, create a minimal DCR quickly:
+**If you don't have the JSON file, create a minimal DCR quickly:**
 cat > /tmp/dcr-min.json <<'JSON'
 {
   "location": "eastus2",
@@ -83,13 +88,13 @@ cat > /tmp/dcr-min.json <<'JSON'
 }
 JSON
 
-# We Replace placeholders and create the DCR
+**We Replace placeholders and create the DCR**
 SUB_ID=$(az account show --query id -o tsv)
 sed -i "s#__SUB__#${SUB_ID}#g; s#__RG__#${RG_TARGET}#g; s#__LAW__#${LAW_NAME}#g" /tmp/dcr-min.json
 az resource create -g "$RG_TARGET" -n "$DCR_NAME" --resource-type "Microsoft.Insights/dataCollectionRules" \
   --is-full-object --properties @"'/tmp/dcr-min.json'"
 
-# 3) Associate DCR to VM
+**3) Associate DCR to VM**
 VM_ID=$(az vm show -g "$RG_TARGET" -n "$VM_NAME" --query id -o tsv)
 az monitor data-collection rule association create \
   --association-name "vm-dcr" \
@@ -99,9 +104,10 @@ az monitor data-collection rule association create \
 
 Tip: It can take ~5–10 minutes for VM insights data to appear in LAW. Use Logs → run Perf | limit 10.
 
-⚙️ Section 2 — Stream Tenant Activity Logs to LAW (Subscription-level)
+## ⚙️ Section 2 — Stream Tenant Activity Logs to LAW (Subscription-level)
 
-# Create a Diagnostic Setting at the subscription scope to LAW
+**Create a Diagnostic Setting at the subscription scope to LAW**
+
 export DIAG_NAME="sub-activity-to-law"
 az monitor diagnostic-settings create \
   --name "$DIAG_NAME" \
@@ -113,7 +119,7 @@ orkspace "$(az monitor log-analytics workspace show -g "$RG_TARGET" -n "$LAW_NAM
 
 Now Activity Logs (e.g., policy changes, RBAC changes) land in LAW.
 
-⚙️ Section 3 — Enforce a Minimal Policy Baseline (Free)
+## ⚙️ Section 3 — Enforce a Minimal Policy Baseline (Free)
 
 We’ll assign built-in Azure Policies:
 
@@ -123,10 +129,12 @@ Audit VMs with insecure password auth enabled (Linux)
 
 Audit missing diagnostics to LAW for supported types
 
-# 1) Create/ensure a Tag Policy assignment at the RG scope
+**1) Create/ensure a Tag Policy assignment at the RG scope**
+
 export POL_SCOPE="/subscriptions/$SUB_ID/resourceGroups/$RG_TARGET"
 
-# Tag rule: Add if missing (DeployIfNotExists requires a remediation identity)
+**Tag rule: Add if missing (DeployIfNotExists requires a remediation identity)**
+
 az policy assignment create \
   --name "require-owner-tag" \
   --display-name "Require Owner Tag on Resources" \
@@ -135,14 +143,16 @@ az policy assignment create \
   --params '{ "tagName": { "value": "owner" }, "tagValue": { "value": "olumidetowoju" } }' \
   --enforcement-mode Default
 
-# 2) Audit Linux VMs that allow password auth (security hygiene)
+**2) Audit Linux VMs that allow password auth (security hygiene)**
+
 az policy assignment create \
   --name "audit-linux-password-auth" \
   --display-name "Audit Linux VMs that allow password authentication" \
   --policy "/providers/Microsoft.Authorization/policyDefinitions/1caf7aa3-5e23-4f2c-9b3b-4f6c3f1d2db1" \
   --scope "$POL_SCOPE"
 
-# 3) Audit missing diagnostic settings to LAW (broad categories)
+**3) Audit missing diagnostic settings to LAW (broad categories)**
+
 az policy assignment create \
   --name "audit-missing-diagnostics" \
   --display-name "Audit missing diagnostic settings to LAW" \
@@ -153,24 +163,27 @@ az policy assignment create \
 
 If any policy definition IDs differ in your tenant, use Portal → Policy → Definitions to pick equivalent built-in policies. For the lab, Audit-level assignments are enough and cost-free.
 
-⚙️ Section 4 — Defender for Cloud (Free Tier Only)
+## ⚙️ Section 4 — Defender for Cloud (Free Tier Only)
 
-# Ensure the free tier (no charges for recommendations)
+**Ensure the free tier (no charges for recommendations)**
+
 az security pricing create --name VirtualMachines --tier Free
 az security pricing create --name SqlServers --tier Free
 az security pricing create --name StorageAccounts --tier Free
 
-# List your current plan tiers
+**List your current plan tiers**
+
 az security pricing list -o table
 
 
 Open Portal → Defender for Cloud → you’ll get security recommendations without turning on paid plans.
 
-⚙️ Section 5 — Create a Simple Alert Rule (Activity Log → LAW Query)
+## ⚙️ Section 5 — Create a Simple Alert Rule (Activity Log → LAW Query)
 
 We’ll create a basic alert that fires on Policy NonCompliance events.
 
-# KQL query (Activity Log in LAW)
+**KQL query (Activity Log in LAW)**
+
 cat > /tmp/policy_noncompliance.kql <<'KQL'
 AzureActivity
 | where CategoryValue == "Policy"
@@ -179,11 +192,12 @@ AzureActivity
 | limit 50
 KQL
 
-# Create an alert rule from LAW (Portal recommended for full wizard)
+**Create an alert rule from LAW (Portal recommended for full wizard**
+
 echo "Use Portal → Monitor → Alerts → + Create → Log alert rule"
 echo "Paste the KQL above; set LAW = $LAW_NAME, RG = $RG_TARGET"
 
-🧩 Sequence Diagram
+## 🧩 Sequence Diagram
 ```mermaid
 sequenceDiagram
     participant Azure as Azure Resources (VM/SQL/Storage)
@@ -202,7 +216,8 @@ sequenceDiagram
 
 ---
 
-✅ Checkpoint
+## ✅ Checkpoint
+
 Goal	How to Verify
 LAW exists	az monitor log-analytics workspace list -g "$RG_TARGET" -o table
 VM sending perf logs	LAW → Logs → run `Perf
@@ -210,7 +225,7 @@ Activity Logs flowing	LAW → Logs → run KQL from Section 5
 Policies assigned	az policy assignment list --scope "$POL_SCOPE" -o table
 Defender Free plans	az security pricing list -o table
 
-🧠 Assessment (short quiz)
+## 🧠 Assessment (short quiz)
 
 What is the free way to get security recommendations without enabling paid plans?
 
